@@ -1,0 +1,70 @@
+{% extends 'musker/base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<h1>Search User</h1>
+<br/>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="input" class="form-control" placeholder="Search meeps" name="search">
+
+    <br/>
+    
+    <button type="submit" class="btn btn-secondary">Search User</button>
+</form>
+<br/>
+{% if search %}
+{% for result in searched %}
+<b><h2>Showing results for: {{search}}</h2></b>
+<br/>
+{% endfor %}
+{% endif %}
+
+{% if searched %}
+    {% for result in searched %}
+
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+
+            {% if result.profile.profile_image %}
+
+            <img src="{{result.profile.profile_image.url}}" width=200 height=200 class="img-fluid rounded-start" alt="{{result.profile.user.username}}">
+
+            {% else %}
+
+            <img src="{% static 'images/default_profile_pic.png' %}" class="img-fluid rounded-start" alt="Profile Image">
+
+            {% endif %}
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{result.profile.user.username}}</h5>
+              <p class="card-text"><a href="{% url 'profile' result.profile.user.id %}">@{{result.profile.user.username|lower}}</a></p><br/><br/>
+              <p class="card-text"><small class="text-body-secondary">Last updated: {{result.profile.date_modified}}</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br/><br/>
+
+    {% endfor %}
+
+{% else %}
+
+      {% if searched == None %}
+
+      {% else %}
+        <b><h3>Sorry, No usernames containing {{search}} exists, Please try again...</h3></b>
+      {% endif %}
+{% endif %}
+
+
+
+
+<br/><br/>
+
+{% endblock content %}
