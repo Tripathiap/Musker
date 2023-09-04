@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'musker',
+    'django_social_share',
 ]
 
 MIDDLEWARE = [

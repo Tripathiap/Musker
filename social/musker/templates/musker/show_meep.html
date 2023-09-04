@@ -1,5 +1,6 @@
 {% extends 'musker/base.html' %}
 {% load static %}
+{% load social_share %}
 {% block content %}
 
 
@@ -40,9 +41,17 @@
                         {% endif %}
 
                     </small>
-
+                    
                 </div><br/><br/>
-            </div>
+                
+            </div><br/>
+            {% post_to_twitter "{{meep.body}}" object_or_url %}
+            {% post_to_facebook "{{meep.body}}" object_or_url %}
+            {% send_email subject "{{meep.body}}" object_or_url %}
+            {% post_to_whatsapp "{{meep.body}}" object_or_url  %}
+            {% post_to_telegram "{{meep.body}}" object_or_url %}
+            {% post_to_linkedin "{{meep.body}}" object_or_url %}
+            
         </div>
     </div>
 </div>
