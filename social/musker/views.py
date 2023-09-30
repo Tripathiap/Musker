@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
-
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     if request.user.is_authenticated:
@@ -234,23 +235,36 @@ def meep_show(request, pk):
         messages.success(request,"The meep you are looking for doesn't exist...")
         return redirect('home')
 
+@login_required(login_url='login')
 def delete_meep(request, pk):
-    if request.user.is_authenticated:
-        meep = get_object_or_404(Meep, id=pk)
+    # if request.user.is_authenticated:
+    #     meep = get_object_or_404(Meep, id=pk)
         
-        if request.user.username == meep.user.username:
-            # delete the meep
-            meep.delete()
-            messages.success(request,"The meep has been deleted!")
-            return redirect(request.META.get("HTTP_REFERER"))
+    #     if request.user.username == meep.user.username:
+    #         # delete the meep
+    #         meep.delete()
+    #         messages.success(request,"The meep has been deleted!")
+    #         return redirect(request.META.get("HTTP_REFERER"))
         
-        else:
-            messages.success(request,"You don't own that meep!")
-            return redirect('home')
+    #     else:
+    #         messages.success(request,"You don't own that meep!")
+    #         return redirect('home')
         
-    else:
-        messages.success(request,"Please log in...")
-        return redirect(request.META.get("HTTP_REFERER")) 
+    # else:
+    #     messages.success(request,"Please log in...")
+    #     return redirect(request.META.get("HTTP_REFERER")) 
+    meep = Meep.objects.get(id=pk)
+
+    if request.user.username != meep.user.username:
+        return HttpResponse("You are not allowed to delete!")   
+
+    if request.method == 'POST':
+        meep.delete()
+        messages.success(request,"The meep has been deleted!")
+        return redirect('home') 
+
+    context = {'meep':meep}
+    return render(request,'musker/delete_meep.html',context)
 
 def edit_meep(request,pk):
     if request.user.is_authenticated:

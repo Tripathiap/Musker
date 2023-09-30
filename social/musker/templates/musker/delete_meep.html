@@ -1,0 +1,15 @@
+{% extends 'musker/base.html' %}
+
+{% block content %}
+
+<form method = "POST" action="">
+    {% csrf_token %}
+    <p>Are you sure you want to delete the Meep?</p>
+
+    {% comment %} "{{request.META.HTTP_REFERER}}" it sends the user where they came from {% endcomment %}
+    <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
+    <input type="submit" value="Confirm" />  
+
+</form>
+
+{% endblock content %}
